@@ -11,7 +11,6 @@ import com.victorxavier.product_catalog.domain.usecase.category.CreateCategoryUs
 import com.victorxavier.product_catalog.domain.usecase.category.DeleteCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.FindCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.UpdateCategoryUseCase;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryU
     }
     @Override
     public void delete(Long id) {
-        if (!repository.findById(id).isPresent()) {
+        if (repository.findById(id).isEmpty()) {
             throw new ResourceNotFoundException("resource not found");
         }
         try {

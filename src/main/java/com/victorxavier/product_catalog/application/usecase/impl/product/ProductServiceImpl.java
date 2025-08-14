@@ -1,22 +1,18 @@
 package com.victorxavier.product_catalog.application.usecase.impl.product;
 
-import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.dto.ProductDTO;
+import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.entity.Category;
 import com.victorxavier.product_catalog.domain.entity.Product;
 import com.victorxavier.product_catalog.domain.entity.ProductPage;
-import com.victorxavier.product_catalog.domain.exception.ResourceNotFoundException;
 import com.victorxavier.product_catalog.domain.pagination.Page;
 import com.victorxavier.product_catalog.domain.pagination.PageRequest;
-import com.victorxavier.product_catalog.domain.repository.CategoryRepository;
 import com.victorxavier.product_catalog.domain.repository.ProductRepository;
+import com.victorxavier.product_catalog.domain.repository.CategoryRepository;
 import com.victorxavier.product_catalog.domain.usecase.product.*;
-
+import com.victorxavier.product_catalog.domain.exception.ResourceNotFoundException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProductServiceImpl implements FindProductUseCase, CreateProductUsecase, UpdateProductUseCase, DeleteProductUseCase {
@@ -46,7 +42,7 @@ public class ProductServiceImpl implements FindProductUseCase, CreateProductUsec
     @Override
     public void delete(Long id) {
         Optional<Product> obj = productRepository.findById(id);
-        if (!obj.isPresent()) {
+        if (obj.isEmpty()) {
             throw new ResourceNotFoundException("Entity not found");
         }
         productRepository.deleteById(id);

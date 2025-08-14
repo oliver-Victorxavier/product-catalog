@@ -1,5 +1,6 @@
 package com.victorxavier.product_catalog.domain.entity;
 
+import com.victorxavier.product_catalog.domain.projection.ProductProjection;
 import java.util.List;
 
 public class ProductPage {
