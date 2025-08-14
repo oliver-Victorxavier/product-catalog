@@ -52,20 +52,8 @@ public class ProductServiceImpl implements FindProductUseCase, CreateProductUsec
         Optional<Product> obj = productRepository.findById(id);
         Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 
-        entity.setName(productDTO.name());
-        entity.setDescription(productDTO.description());
-        entity.setPrice(productDTO.price());
-        entity.setImgUrl(productDTO.imgUrl());
-
-        // Update categories
-        entity.getCategories().clear();
-        if (productDTO.categories() != null) {
-            for (CategoryDTO catDTO : productDTO.categories()) {
-                Optional<Category> cat = categoryRepository.findById(catDTO.id());
-                Category category = cat.orElseThrow(() -> new ResourceNotFoundException("Category not found: " + catDTO.id()));
-                entity.getCategories().add(category);
-            }
-        }
+        updateProductProperties(entity, productDTO);
+        updateProductCategories(entity, productDTO.categories());
 
         entity = productRepository.save(entity);
         return mapToDTO(entity);
@@ -106,20 +94,28 @@ public class ProductServiceImpl implements FindProductUseCase, CreateProductUsec
 
     private Product mapToEntity(ProductDTO dto) {
         Product entity = new Product();
+        updateProductProperties(entity, dto);
+        entity.setDate(dto.date());
+        updateProductCategories(entity, dto.categories());
+        return entity;
+    }
+
+    private void updateProductProperties(Product entity, ProductDTO dto) {
         entity.setName(dto.name());
         entity.setDescription(dto.description());
         entity.setPrice(dto.price());
         entity.setImgUrl(dto.imgUrl());
-        entity.setDate(dto.date());
+    }
 
-        if (dto.categories() != null) {
-            for (CategoryDTO categoryDTO : dto.categories()) {
+    private void updateProductCategories(Product entity, List<CategoryDTO> categoryDTOs) {
+        entity.getCategories().clear();
+        if (categoryDTOs != null) {
+            for (CategoryDTO categoryDTO : categoryDTOs) {
                 Optional<Category> cat = categoryRepository.findById(categoryDTO.id());
                 Category category = cat.orElseThrow(() -> new ResourceNotFoundException("Category not found: " + categoryDTO.id()));
                 entity.getCategories().add(category);
             }
         }
-        return entity;
     }
 
     private ProductDTO mapToDTO(Product entity) {
