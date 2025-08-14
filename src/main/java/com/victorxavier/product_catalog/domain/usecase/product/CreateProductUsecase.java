@@ -1,7 +1,7 @@
 package com.victorxavier.product_catalog.domain.usecase.product;
 
-import com.victorxavier.product_catalog.domain.entity.Product;
+import com.victorxavier.product_catalog.domain.dto.ProductDTO;
 
 public interface CreateProductUsecase {
-    Product create(Product product);
+    ProductDTO create(ProductDTO productDTO);
 }

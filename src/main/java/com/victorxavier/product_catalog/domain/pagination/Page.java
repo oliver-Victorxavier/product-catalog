@@ -3,6 +3,7 @@ package com.victorxavier.product_catalog.domain.pagination;
 import java.util.List;
 
 public class Page<T> {
+
     private List<T> content;
     private int pageNumber;
     private int pageSize;
@@ -41,10 +42,12 @@ public class Page<T> {
     }
 
     public boolean isFirst() {
+
         return pageNumber == 0;
     }
 
     public boolean isLast() {
+
         return pageNumber >= getTotalPages() - 1;
     }
 
