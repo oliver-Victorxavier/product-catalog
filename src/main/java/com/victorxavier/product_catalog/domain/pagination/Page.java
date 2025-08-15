@@ -1,6 +1,8 @@
 package com.victorxavier.product_catalog.domain.pagination;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Page<T> {
 
@@ -49,6 +51,13 @@ public class Page<T> {
     public boolean isLast() {
 
         return pageNumber >= getTotalPages() - 1;
+    }
+
+    public <U> Page<U> map(Function<T, U> mapper) {
+        List<U> mappedContent = content.stream()
+                .map(mapper)
+                .collect(Collectors.toList());
+        return new Page<>(mappedContent, pageNumber, pageSize, totalElements);
     }
 
 }

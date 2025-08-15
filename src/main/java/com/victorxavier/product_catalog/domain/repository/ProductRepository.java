@@ -9,11 +9,15 @@ import java.util.Optional;
 public interface ProductRepository {
 
     Product save(Product product);
+
     Optional<Product> findById(Long id);
+
     List<Product> findAll();
+
     void deleteById(Long id);
 
-    ProductPage searchProducts(List<Long> categoryIds, String name, int page, int size, String sort);
+    ProductPage searchProducts(List<Long> categoryIds, String name, int page, int size, String sort, String direction);
+
     List<Product> findProductsWithCategories(List<Long> productIds);
 
 }
