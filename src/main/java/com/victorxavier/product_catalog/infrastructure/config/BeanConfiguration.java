@@ -1,8 +1,10 @@
 package com.victorxavier.product_catalog.infrastructure.config;
 
-import com.victorxavier.product_catalog.domain.mapper.CategoryDTOMapper;
-import com.victorxavier.product_catalog.domain.mapper.UserMapper;
-import com.victorxavier.product_catalog.domain.mapper.RoleMapper;
+import com.victorxavier.product_catalog.domain.mapper.CategoryDomainMapper;
+import com.victorxavier.product_catalog.domain.mapper.UserDomainMapper;
+import com.victorxavier.product_catalog.infrastructure.mapper.CategoryDTOMapper;
+import com.victorxavier.product_catalog.infrastructure.mapper.UserMapper;
+import com.victorxavier.product_catalog.infrastructure.mapper.RoleMapper;
 import com.victorxavier.product_catalog.application.usecase.impl.category.CategoryServiceImpl;
 import com.victorxavier.product_catalog.application.usecase.impl.product.ProductServiceImpl;
 import com.victorxavier.product_catalog.domain.repository.CategoryRepository;
@@ -23,12 +25,12 @@ public class BeanConfiguration {
     @Bean
     public CategoryServiceImpl categoryServiceImpl(
             CategoryRepository categoryRepository,
-            CategoryDTOMapper categoryDTOMapper) {
-        return new CategoryServiceImpl(categoryRepository, categoryDTOMapper);
+            CategoryDomainMapper categoryDomainMapper) {
+        return new CategoryServiceImpl(categoryRepository, categoryDomainMapper);
     }
 
     @Bean
-    public CategoryDTOMapper categoryDTOMapper() {
+    public CategoryDomainMapper categoryDomainMapper() {
         return new CategoryDTOMapper();
     }
 
@@ -40,5 +42,10 @@ public class BeanConfiguration {
     @Bean
     public UserMapper userMapper(RoleMapper roleMapper) {
         return new UserMapper(roleMapper);
+    }
+
+    @Bean
+    public UserDomainMapper userDomainMapper(UserMapper userMapper) {
+        return userMapper;
     }
 }

@@ -4,7 +4,7 @@ import com.victorxavier.product_catalog.domain.entity.Role;
 import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.repository.RoleRepository;
 import com.victorxavier.product_catalog.domain.repository.UserRepository;
-import com.victorxavier.product_catalog.infrastructure.security.PasswordService;
+import com.victorxavier.product_catalog.domain.service.PasswordService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,12 +55,13 @@ public class AdminUserConfig implements CommandLineRunner {
                 },
                 () -> {
                     // Gera salt e hash para a senha do admin
-                    var saltAndHash = passwordService.createSaltAndHash("123456");
+                    String salt = passwordService.generateSalt();
+                    String hash = passwordService.hashPassword("123456", salt);
                     
                     var user = new User();
                     user.setUsername("admin");
-                    user.setPasswordSalt(saltAndHash.getSalt());
-                    user.setPasswordHash(saltAndHash.getHash());
+                    user.setPasswordSalt(salt);
+                    user.setPasswordHash(hash);
                     user.setRoles(Set.of(finalRoleAdmin));
                     user.setCreationTimestamp(Instant.now());
                     userRepository.save(user);
