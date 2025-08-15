@@ -1,9 +1,9 @@
 package com.victorxavier.product_catalog.domain.mapper;
 
 import com.victorxavier.product_catalog.domain.entity.User;
+import com.victorxavier.product_catalog.domain.entity.Role;
 import com.victorxavier.product_catalog.infrastructure.persistence.entity.UserEntity;
-import com.victorxavier.product_catalog.domain.mapper.RoleMapper;
-
+import com.victorxavier.product_catalog.infrastructure.persistence.entity.RoleEntity;
 import java.util.stream.Collectors;
 
 public class UserMapper {
@@ -14,20 +14,21 @@ public class UserMapper {
         this.roleMapper = roleMapper;
     }
 
-    public User toDomain(UserEntity userEntity) {
-        if (userEntity == null) {
+    public User toDomain(UserEntity entity) {
+        if (entity == null) {
             return null;
         }
-        
+
         User user = new User();
-        user.setUserId(userEntity.getUserId());
-        user.setUsername(userEntity.getUsername());
-        user.setPasswordHash(userEntity.getPasswordHash());
-        user.setPasswordSalt(userEntity.getPasswordSalt());
-        user.setCreationTimestamp(userEntity.getCreationTimestamp());
+        user.setId(entity.getId());
+        user.setFirstName(entity.getFirstName());
+        user.setLastName(entity.getLastName());
+        user.setEmail(entity.getEmail());
+        user.setPassword(entity.getPassword());
+        user.setBirthDate(entity.getBirthDate());
         
-        if (userEntity.getRoles() != null) {
-            user.setRoles(userEntity.getRoles().stream()
+        if (entity.getRoles() != null) {
+            user.setRoles(entity.getRoles().stream()
                     .map(roleMapper::toDomain)
                     .collect(Collectors.toSet()));
         }
@@ -39,20 +40,21 @@ public class UserMapper {
         if (user == null) {
             return null;
         }
-        
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserId(user.getUserId());
-        userEntity.setUsername(user.getUsername());
-        userEntity.setPasswordHash(user.getPasswordHash());
-        userEntity.setPasswordSalt(user.getPasswordSalt());
-        userEntity.setCreationTimestamp(user.getCreationTimestamp());
+
+        UserEntity entity = new UserEntity();
+        entity.setId(user.getId());
+        entity.setFirstName(user.getFirstName());
+        entity.setLastName(user.getLastName());
+        entity.setEmail(user.getEmail());
+        entity.setPassword(user.getPassword());
+        entity.setBirthDate(user.getBirthDate());
         
         if (user.getRoles() != null) {
-            userEntity.setRoles(user.getRoles().stream()
+            entity.setRoles(user.getRoles().stream()
                     .map(roleMapper::toEntity)
                     .collect(Collectors.toSet()));
         }
         
-        return userEntity;
+        return entity;
     }
 }

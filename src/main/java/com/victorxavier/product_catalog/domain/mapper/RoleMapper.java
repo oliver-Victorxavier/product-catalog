@@ -5,17 +5,27 @@ import com.victorxavier.product_catalog.infrastructure.persistence.entity.RoleEn
 
 public class RoleMapper {
 
-    public Role toDomain(RoleEntity roleEntity) {
-        if (roleEntity == null) {
+    public Role toDomain(RoleEntity entity) {
+        if (entity == null) {
             return null;
         }
-        return new Role(roleEntity.getRoleId(), roleEntity.getName());
+
+        Role role = new Role();
+        role.setId(entity.getId());
+        role.setAuthority(entity.getAuthority());
+        
+        return role;
     }
 
     public RoleEntity toEntity(Role role) {
         if (role == null) {
             return null;
         }
-        return new RoleEntity(role.getRoleId(), role.getName());
+
+        RoleEntity entity = new RoleEntity();
+        entity.setId(role.getId());
+        entity.setAuthority(role.getAuthority());
+        
+        return entity;
     }
 }
