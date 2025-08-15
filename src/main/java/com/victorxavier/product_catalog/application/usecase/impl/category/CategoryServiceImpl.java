@@ -5,22 +5,21 @@ import com.victorxavier.product_catalog.domain.entity.Category;
 import com.victorxavier.product_catalog.domain.exception.DatabaseException;
 import com.victorxavier.product_catalog.domain.exception.ResourceNotFoundException;
 import com.victorxavier.product_catalog.domain.pagination.Page;
+import com.victorxavier.product_catalog.domain.pagination.Pageable;
 import com.victorxavier.product_catalog.domain.repository.CategoryRepository;
 import com.victorxavier.product_catalog.domain.usecase.category.CreateCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.DeleteCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.FindCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.UpdateCategoryUseCase;
-import com.victorxavier.product_catalog.domain.mapper.CategoryDTOMapper;
-import java.util.List;
+import com.victorxavier.product_catalog.domain.mapper.CategoryDomainMapper;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryUseCase, UpdateCategoryUseCase, DeleteCategoryUseCase {
 
     private final CategoryRepository repository;
-    private final CategoryDTOMapper categoryMapper;
+    private final CategoryDomainMapper categoryMapper;
 
-    public CategoryServiceImpl(CategoryRepository repository, CategoryDTOMapper categoryMapper){
+    public CategoryServiceImpl(CategoryRepository repository, CategoryDomainMapper categoryMapper){
         this.repository = repository;
         this.categoryMapper = categoryMapper;
     }
@@ -67,17 +66,10 @@ public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryU
 
     @Override
     public Page<CategoryDTO> findAllPaged(int page, int size) {
-        List<Category> categories = repository.findAll();
-        List<CategoryDTO> categoryDTOs = categories.stream()
-                .map(categoryMapper::toDTO)
-                .collect(Collectors.toList());
-
-        // pagination logic
-        int start = page * size;
-        int end = Math.min(start + size, categoryDTOs.size());
-        List<CategoryDTO> pageContent = start < categoryDTOs.size() ?
-                categoryDTOs.subList(start, end) : List.of();
-
-        return new Page<>(pageContent, page, size, categoryDTOs.size());
+        org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(page, size);
+        com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter pageable = 
+            new com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter(springPageable);
+        Page<Category> categoryPage = repository.findAllPaged(pageable);
+        return categoryPage.map(categoryMapper::toDTO);
     }
 }
