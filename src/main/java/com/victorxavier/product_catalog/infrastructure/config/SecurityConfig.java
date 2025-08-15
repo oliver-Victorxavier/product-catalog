@@ -1,10 +1,9 @@
 package com.victorxavier.product_catalog.infrastructure.config;
 
 import com.victorxavier.product_catalog.infrastructure.security.JwtAuthenticationFilter;
-import com.victorxavier.product_catalog.infrastructure.security.JwtServiceAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,50 +12,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final JwtServiceAdapter jwtService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JwtServiceAdapter jwtService) {
-        this.jwtService = jwtService;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService);
-        
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // Permitir acesso público ao endpoint de login
-                .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                
-                // Permitir acesso público aos endpoints de busca (GET) para usuários normais
-                .requestMatchers(HttpMethod.GET, "/products").permitAll()
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/categories").permitAll()
-                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                
-                // Endpoints de usuários - apenas admin pode acessar
-                .requestMatchers("/users/**").hasRole("ADMIN")
-                
-                // Endpoints de criação, atualização e exclusão - apenas admin
-                .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
-                
-                // Console H2 para desenvolvimento
-                .requestMatchers("/h2-console/**").permitAll()
-                
-                // Qualquer outra requisição requer autenticação
+                .requestMatchers("/api/users/create", "/api/auth/login", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .headers(headers -> headers.frameOptions().disable()); // Para H2 console
+            .headers(headers -> headers.frameOptions().disable()); // Para H2 Console
 
         return http.build();
     }

@@ -9,8 +9,8 @@ public record UserDTO(
     String firstName,
     String lastName,
     String email,
-    String username,
     LocalDate birthDate,
+    String username,
     Instant creationTimestamp,
-    Set<RoleDTO> roles
+    Set<String> roles
 ) {}

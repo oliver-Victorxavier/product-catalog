@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtServiceAdapter jwtService;
@@ -30,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         // Pular o filtro JWT para o endpoint de login
         String requestPath = request.getRequestURI();
-        if ("/login".equals(requestPath)) {
+        if ("/api/auth/login".equals(requestPath)) {
             filterChain.doFilter(request, response);
             return;
         }

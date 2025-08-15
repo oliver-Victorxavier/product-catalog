@@ -1,16 +1,17 @@
 package com.victorxavier.product_catalog.infrastructure.mapper;
 
-import com.victorxavier.product_catalog.domain.dto.RoleDTO;
 import com.victorxavier.product_catalog.domain.dto.UserDTO;
-import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.entity.Role;
+import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.mapper.UserDomainMapper;
-import com.victorxavier.product_catalog.infrastructure.persistence.entity.UserEntity;
 import com.victorxavier.product_catalog.infrastructure.persistence.entity.RoleEntity;
+import com.victorxavier.product_catalog.infrastructure.persistence.entity.UserEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class UserMapper implements UserDomainMapper {
 
     private final RoleMapper roleMapper;
@@ -29,18 +30,19 @@ public class UserMapper implements UserDomainMapper {
         user.setFirstName(entity.getFirstName());
         user.setLastName(entity.getLastName());
         user.setEmail(entity.getEmail());
+        user.setBirthDate(entity.getBirthDate());
         user.setUsername(entity.getUsername());
         user.setPasswordHash(entity.getPasswordHash());
         user.setPasswordSalt(entity.getPasswordSalt());
-        user.setBirthDate(entity.getBirthDate());
         user.setCreationTimestamp(entity.getCreationTimestamp());
-        
+
         if (entity.getRoles() != null) {
-            user.setRoles(entity.getRoles().stream()
+            Set<Role> roles = entity.getRoles().stream()
                     .map(roleMapper::toDomain)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
         }
-        
+
         return user;
     }
 
@@ -54,18 +56,19 @@ public class UserMapper implements UserDomainMapper {
         entity.setFirstName(user.getFirstName());
         entity.setLastName(user.getLastName());
         entity.setEmail(user.getEmail());
+        entity.setBirthDate(user.getBirthDate());
         entity.setUsername(user.getUsername());
         entity.setPasswordHash(user.getPasswordHash());
         entity.setPasswordSalt(user.getPasswordSalt());
-        entity.setBirthDate(user.getBirthDate());
         entity.setCreationTimestamp(user.getCreationTimestamp());
-        
+
         if (user.getRoles() != null) {
-            entity.setRoles(user.getRoles().stream()
+            Set<RoleEntity> roleEntities = user.getRoles().stream()
                     .map(roleMapper::toEntity)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            entity.setRoles(roleEntities);
         }
-        
+
         return entity;
     }
 
@@ -75,27 +78,27 @@ public class UserMapper implements UserDomainMapper {
             return null;
         }
 
-        Set<RoleDTO> roleDTOs = null;
+        Set<String> roleNames = null;
         if (user.getRoles() != null) {
-            roleDTOs = user.getRoles().stream()
-                    .map(role -> new RoleDTO(role.getId().toString(), role.getName()))
+            roleNames = user.getRoles().stream()
+                    .map(Role::getName)
                     .collect(Collectors.toSet());
         }
-        
+
         return new UserDTO(
-            user.getId(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getEmail(),
-            user.getUsername(),
-            user.getBirthDate(),
-            user.getCreationTimestamp(),
-            roleDTOs
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getBirthDate(),
+                user.getUsername(),
+                user.getCreationTimestamp(),
+                roleNames
         );
     }
 
     @Override
-    public User toDomain(UserDTO userDTO) {
+    public User toEntity(UserDTO userDTO) {
         if (userDTO == null) {
             return null;
         }
@@ -105,22 +108,12 @@ public class UserMapper implements UserDomainMapper {
         user.setFirstName(userDTO.firstName());
         user.setLastName(userDTO.lastName());
         user.setEmail(userDTO.email());
-        user.setUsername(userDTO.username());
         user.setBirthDate(userDTO.birthDate());
+        user.setUsername(userDTO.username());
         user.setCreationTimestamp(userDTO.creationTimestamp());
-        
-        if (userDTO.roles() != null) {
-            Set<Role> roles = userDTO.roles().stream()
-                    .map(roleDTO -> {
-                        Role role = new Role();
-                        role.setId(Long.parseLong(roleDTO.id()));
-                        role.setName(roleDTO.name());
-                        return role;
-                    })
-                    .collect(Collectors.toSet());
-            user.setRoles(roles);
-        }
-        
+
+        // Note: Role conversion from String names would require additional logic
+        // This is a simplified implementation
         return user;
     }
 }

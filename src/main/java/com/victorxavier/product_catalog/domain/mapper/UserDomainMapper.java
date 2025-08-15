@@ -5,5 +5,5 @@ import com.victorxavier.product_catalog.domain.entity.User;
 
 public interface UserDomainMapper {
     UserDTO toDTO(User user);
-    User toDomain(UserDTO userDTO);
+    User toEntity(UserDTO userDTO);
 }

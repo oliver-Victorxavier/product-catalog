@@ -1,5 +1,7 @@
 package com.victorxavier.product_catalog.domain.entity;
 
+import java.util.Objects;
+
 public class Role {
     private Long id;
     private String name;
@@ -27,24 +29,24 @@ public class Role {
         this.name = name;
     }
 
-    public enum Values {
-        ADMIN(1L, "ADMIN"),
-        BASIC(2L, "BASIC");
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id);
+    }
 
-        private final Long roleId;
-        private final String name;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
-        Values(Long roleId, String name) {
-            this.roleId = roleId;
-            this.name = name;
-        }
-
-        public Long getRoleId() {
-            return roleId;
-        }
-
-        public String getName() {
-            return name;
-        }
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

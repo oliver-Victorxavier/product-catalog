@@ -6,6 +6,7 @@ import com.victorxavier.product_catalog.domain.pagination.PageRequest;
 import com.victorxavier.product_catalog.application.usecase.impl.product.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,6 +25,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> findAllPaged(
             @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
@@ -37,12 +39,14 @@ public class ProductController {
         return ResponseEntity.ok().body(pageResult);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         ProductDTO productDTO = productService.findById(id);
         return ResponseEntity.ok().body(productDTO);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO> create(@Valid @RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.create(productDTO);
@@ -52,12 +56,14 @@ public class ProductController {
         return ResponseEntity.created(uri).body(createdProduct);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProduct = productService.update(id, productDTO);
         return ResponseEntity.ok().body(updatedProduct);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);

@@ -66,9 +66,7 @@ public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryU
 
     @Override
     public Page<CategoryDTO> findAllPaged(int page, int size) {
-        org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(page, size);
-        com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter pageable = 
-            new com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter(springPageable);
+        Pageable pageable = new Pageable(page, size, null, null);
         Page<Category> categoryPage = repository.findAllPaged(pageable);
         return categoryPage.map(categoryMapper::toDTO);
     }

@@ -5,5 +5,5 @@ import com.victorxavier.product_catalog.domain.entity.Category;
 
 public interface CategoryDomainMapper {
     CategoryDTO toDTO(Category category);
-    Category toDomain(CategoryDTO categoryDTO);
+    Category toEntity(CategoryDTO categoryDTO);
 }
