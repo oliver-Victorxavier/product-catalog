@@ -1,4 +1,4 @@
-INSERT INTO tb_roles (name) VALUES ('OPERATOR');
+INSERT INTO tb_roles (name) VALUES ('USER');
 INSERT INTO tb_roles (name) VALUES ('ADMIN');
 
 -- Users and roles associations are created by AdminUserConfig

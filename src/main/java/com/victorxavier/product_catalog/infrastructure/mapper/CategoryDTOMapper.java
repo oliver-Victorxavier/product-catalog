@@ -3,7 +3,9 @@ package com.victorxavier.product_catalog.infrastructure.mapper;
 import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.entity.Category;
 import com.victorxavier.product_catalog.domain.mapper.CategoryDomainMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CategoryDTOMapper implements CategoryDomainMapper {
 
     @Override
@@ -15,13 +17,13 @@ public class CategoryDTOMapper implements CategoryDomainMapper {
     }
 
     @Override
-    public Category toDomain(CategoryDTO dto) {
-        if (dto == null) {
+    public Category toEntity(CategoryDTO categoryDTO) {
+        if (categoryDTO == null) {
             return null;
         }
         Category category = new Category();
-        category.setId(dto.id());
-        category.setName(dto.name());
+        category.setId(categoryDTO.id());
+        category.setName(categoryDTO.name());
         return category;
     }
 }

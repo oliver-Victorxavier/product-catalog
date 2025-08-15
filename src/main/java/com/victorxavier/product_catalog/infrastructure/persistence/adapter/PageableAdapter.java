@@ -1,9 +1,10 @@
 package com.victorxavier.product_catalog.infrastructure.persistence.adapter;
 
 import com.victorxavier.product_catalog.domain.pagination.Pageable;
-import com.victorxavier.product_catalog.domain.pagination.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
-public class PageableAdapter implements Pageable {
+public class PageableAdapter {
     
     private final org.springframework.data.domain.Pageable springPageable;
     
@@ -11,39 +12,17 @@ public class PageableAdapter implements Pageable {
         this.springPageable = springPageable;
     }
     
-    @Override
-    public int getPageNumber() {
-        return springPageable.getPageNumber();
-    }
-    
-    @Override
-    public int getPageSize() {
-        return springPageable.getPageSize();
-    }
-    
-
-    
-    @Override
-    public Sort getSort() {
-        return new SortAdapter(springPageable.getSort());
-    }
-    
-    // Método para converter de volta para Spring Pageable quando necessário
-    public org.springframework.data.domain.Pageable toSpringPageable() {
-        return springPageable;
-    }
-    
-    // Método estático para converter do domínio para Spring
-    public static org.springframework.data.domain.Pageable toSpring(Pageable domainPageable) {
-        if (domainPageable instanceof PageableAdapter) {
-            return ((PageableAdapter) domainPageable).toSpringPageable();
+    public static org.springframework.data.domain.Pageable toSpring(Pageable pageable) {
+        if (pageable.getSort() != null && !pageable.getSort().isEmpty()) {
+            Sort.Direction direction = pageable.getSortDirection() == com.victorxavier.product_catalog.domain.pagination.Sort.Direction.DESC 
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sort = Sort.by(direction, pageable.getSort());
+            return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
-        
-        // Conversão manual se não for um adapter
-        return org.springframework.data.domain.PageRequest.of(
-            domainPageable.getPageNumber(),
-            domainPageable.getPageSize(),
-            SortAdapter.toSpring(domainPageable.getSort())
-        );
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+    }
+    
+    public static Pageable fromSpring(org.springframework.data.domain.Pageable springPageable) {
+        return new Pageable(springPageable.getPageNumber(), springPageable.getPageSize());
     }
 }
