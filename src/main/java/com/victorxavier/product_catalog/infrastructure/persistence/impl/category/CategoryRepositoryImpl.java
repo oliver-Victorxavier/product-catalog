@@ -6,9 +6,9 @@ import com.victorxavier.product_catalog.infrastructure.persistence.entity.Catego
 import com.victorxavier.product_catalog.infrastructure.persistence.jpa.CategoryJpaRepository;
 import com.victorxavier.product_catalog.infrastructure.persistence.mapper.category.CategoryEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import com.victorxavier.product_catalog.domain.pagination.Page;
+import com.victorxavier.product_catalog.domain.pagination.Pageable;
+import com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -51,12 +51,13 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public Page<Category> findAllPaged(Pageable pageable) {
-        Page<CategoryEntity> entityPage =
-                categoryJpaRepository.findAll(pageable);
+        org.springframework.data.domain.Pageable springPageable = PageableAdapter.toSpring(pageable);
+        org.springframework.data.domain.Page<CategoryEntity> entityPage =
+                categoryJpaRepository.findAll(springPageable);
         List<Category> categories = entityPage.getContent().stream()
-                .map(categoryMapper::toDomain)
-                .collect(Collectors.toList());
-        return new PageImpl<>(categories, pageable, entityPage.getTotalElements());
+            .map(categoryMapper::toDomain)
+            .collect(java.util.stream.Collectors.toList());
+        return new Page<>(categories, entityPage.getNumber(), entityPage.getSize(), entityPage.getTotalElements());
     }
 
     @Override

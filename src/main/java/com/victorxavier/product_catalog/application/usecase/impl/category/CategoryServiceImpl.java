@@ -1,6 +1,5 @@
 package com.victorxavier.product_catalog.application.usecase.impl.category;
 
-import com.victorxavier.product_catalog.application.mapper.CategoryDTOMapper;
 import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.entity.Category;
 import com.victorxavier.product_catalog.domain.exception.DatabaseException;
@@ -11,6 +10,7 @@ import com.victorxavier.product_catalog.domain.usecase.category.CreateCategoryUs
 import com.victorxavier.product_catalog.domain.usecase.category.DeleteCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.FindCategoryUseCase;
 import com.victorxavier.product_catalog.domain.usecase.category.UpdateCategoryUseCase;
+import com.victorxavier.product_catalog.domain.mapper.CategoryDTOMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

@@ -60,7 +60,7 @@ public class ProductServiceImpl implements FindProductUseCase, CreateProductUsec
     }
     @Override
     public Page<ProductDTO> findAllPaged(String categoryId, String name, PageRequest pageRequest) {
-        List<Long> categoryIds = new ArrayList<>();
+        List<Long> categoryIds = null;
         if (!"0".equals(categoryId)) {
             categoryIds = Arrays.asList(categoryId.split(",")).stream()
                     .map(Long::parseLong)
@@ -72,7 +72,8 @@ public class ProductServiceImpl implements FindProductUseCase, CreateProductUsec
                 name.trim(),
                 pageRequest.getPageNumber(),
                 pageRequest.getPageSize(),
-                pageRequest.getSortField()
+                pageRequest.getSortField(),
+                pageRequest.getSortDirection()
         );
 
         List<Long> productIds = page.getContent().stream()

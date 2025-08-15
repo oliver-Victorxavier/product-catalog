@@ -13,8 +13,12 @@ public class ProductProjectionMapper {
         }
 
         return new ProductProjection(
+                projection.getId(),
                 projection.getName(),
-                projection.getId()
+                projection.getPrice(),
+                projection.getDate(),
+                projection.getDescription(),
+                projection.getImgUrl()
         );
     }
 }
