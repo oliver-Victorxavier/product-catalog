@@ -1,4 +1,4 @@
-package com.victorxavier.product_catalog.application.mapper;
+package com.victorxavier.product_catalog.domain.mapper;
 
 import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.entity.Category;
