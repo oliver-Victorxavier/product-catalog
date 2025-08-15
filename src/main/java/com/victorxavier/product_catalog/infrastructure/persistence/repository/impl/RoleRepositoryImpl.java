@@ -1,6 +1,6 @@
 package com.victorxavier.product_catalog.infrastructure.persistence.repository.impl;
 
-import com.victorxavier.product_catalog.domain.mapper.RoleMapper;
+import com.victorxavier.product_catalog.infrastructure.mapper.RoleMapper;
 import com.victorxavier.product_catalog.domain.entity.Role;
 import com.victorxavier.product_catalog.domain.repository.RoleRepository;
 import com.victorxavier.product_catalog.infrastructure.persistence.repository.JpaRoleRepository;

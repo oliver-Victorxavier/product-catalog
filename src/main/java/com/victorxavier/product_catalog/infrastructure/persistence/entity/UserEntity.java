@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -18,6 +19,18 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(unique = true)
+    private String email;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @Column(unique = true)
     private String username;
@@ -41,13 +54,49 @@ public class UserEntity implements UserDetails {
 
     public UserEntity() {}
 
-    public UserEntity(String userId, String username, String passwordHash, String passwordSalt, Instant creationTimestamp, Set<RoleEntity> roles) {
+    public UserEntity(String userId, String firstName, String lastName, String email, LocalDate birthDate, String username, String passwordHash, String passwordSalt, Instant creationTimestamp, Set<RoleEntity> roles) {
         this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.birthDate = birthDate;
         this.username = username;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.creationTimestamp = creationTimestamp;
         this.roles = roles;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getUserId() {

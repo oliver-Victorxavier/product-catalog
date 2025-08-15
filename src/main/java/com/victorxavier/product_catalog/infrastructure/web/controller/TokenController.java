@@ -19,7 +19,15 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        var loginResponse = loginUseCase.login(loginRequest);
-        return ResponseEntity.ok(loginResponse);
+        try {
+            System.out.println("Login attempt for user: " + loginRequest.username());
+            var loginResponse = loginUseCase.login(loginRequest);
+            System.out.println("Login successful for user: " + loginRequest.username());
+            return ResponseEntity.ok(loginResponse);
+        } catch (Exception e) {
+            System.err.println("Login failed for user: " + loginRequest.username() + ", Error: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

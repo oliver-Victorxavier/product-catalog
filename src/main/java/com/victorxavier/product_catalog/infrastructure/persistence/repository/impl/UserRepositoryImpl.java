@@ -1,6 +1,6 @@
 package com.victorxavier.product_catalog.infrastructure.persistence.repository.impl;
 
-import com.victorxavier.product_catalog.domain.mapper.UserMapper;
+import com.victorxavier.product_catalog.infrastructure.mapper.UserMapper;
 import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.repository.UserRepository;
 import com.victorxavier.product_catalog.infrastructure.persistence.repository.JpaUserRepository;

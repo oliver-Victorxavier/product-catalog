@@ -65,4 +65,18 @@ public class ResourceExceptionHandler {
         erro.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(erro);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<StandardError> runtime(RuntimeException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError erro = new StandardError();
+        erro.setTimestamp(Instant.now());
+        erro.setStatus(status.value());
+        erro.setError("Authentication failed");
+        erro.setMessage(e.getMessage());
+        erro.setPath(request.getRequestURI());
+        System.err.println("RuntimeException caught: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(status).body(erro);
+    }
 }

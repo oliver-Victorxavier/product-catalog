@@ -4,7 +4,6 @@ import com.victorxavier.product_catalog.domain.dto.CreateUserDto;
 import com.victorxavier.product_catalog.domain.dto.UserDTO;
 import com.victorxavier.product_catalog.domain.dto.UserInsertDTO;
 import com.victorxavier.product_catalog.domain.dto.UserUpdateDto;
-import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.usecase.auth.CreateUserUseCase;
 import com.victorxavier.product_catalog.domain.usecase.user.UserService;
 import jakarta.validation.Valid;
@@ -73,7 +72,6 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // Mantém o endpoint original para compatibilidade
     @PostMapping("/create")
     public ResponseEntity<Void> newUser(@RequestBody CreateUserDto createUserDto) {
         createUserUseCase.createUser(createUserDto);
