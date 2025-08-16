@@ -15,7 +15,10 @@ import com.victorxavier.product_catalog.domain.repository.ProductRepository;
 import com.victorxavier.product_catalog.domain.repository.UserRepository;
 import com.victorxavier.product_catalog.domain.repository.RoleRepository;
 import com.victorxavier.product_catalog.domain.service.PasswordService;
+import com.victorxavier.product_catalog.domain.service.JwtService;
+import com.victorxavier.product_catalog.domain.service.SecurityService;
 import com.victorxavier.product_catalog.infrastructure.security.JwtServiceAdapter;
+import com.victorxavier.product_catalog.infrastructure.security.SecurityServiceAdapter;
 import com.victorxavier.product_catalog.domain.usecase.auth.LoginUseCase;
 import com.victorxavier.product_catalog.domain.usecase.auth.CreateUserUseCase;
 import com.victorxavier.product_catalog.domain.usecase.user.UserService;
@@ -63,7 +66,7 @@ public class BeanConfiguration {
     public LoginUseCase loginUseCase(
             UserRepository userRepository,
             PasswordService passwordService,
-            JwtServiceAdapter jwtService) {
+            JwtService jwtService) {
         return new LoginUseCaseImpl(userRepository, passwordService, jwtService);
     }
 
@@ -76,7 +79,15 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public UserService userService() {
-        return new UserServiceImpl();
+    public UserService userService(
+            CreateUserUseCase createUserUseCase,
+            UserRepository userRepository,
+            SecurityService securityService) {
+        return new UserServiceImpl(createUserUseCase, userRepository, securityService);
+    }
+
+    @Bean
+    public SecurityService securityService(JwtServiceAdapter jwtService) {
+        return new SecurityServiceAdapter(jwtService);
     }
 }

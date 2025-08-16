@@ -1,0 +1,28 @@
+{
+  "name": "product-catalog",
+  "version": "1.0.0",
+  "description": "Product Catalog API with Spring Boot",
+  "private": true,
+  "scripts": {
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "semantic-release": "^22.0.12",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/victorxavier/product-catalog.git"
+  },
+  "keywords": [
+    "spring-boot",
+    "java",
+    "api",
+    "postgresql",
+    "docker"
+  ],
+  "author": "Victor Xavier",
+  "license": "MIT"
+}

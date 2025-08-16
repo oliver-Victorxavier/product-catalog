@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter;
 import com.victorxavier.product_catalog.infrastructure.persistence.adapter.SortAdapter;
+import com.victorxavier.product_catalog.domain.pagination.Pageable;
+import com.victorxavier.product_catalog.domain.pagination.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,17 +65,19 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     @Transactional(readOnly = true)
     public ProductPage searchProducts(List<Long> categoryIds, String name, int page, int size, String sortField, String direction) {
-        // Criar Pageable para paginação com direção
-        org.springframework.data.domain.Sort.Direction sortDirection = "DESC".equalsIgnoreCase(direction) ? 
-            org.springframework.data.domain.Sort.Direction.DESC : org.springframework.data.domain.Sort.Direction.ASC;
-        org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(
-            page, size, org.springframework.data.domain.Sort.by(sortDirection, sortField));
+        Sort.Direction domainDirection = 
+            "DESC".equalsIgnoreCase(direction) ? 
+                Sort.Direction.DESC : 
+                Sort.Direction.ASC;
+        
+        Pageable domainPageable = 
+            new Pageable(page, size, sortField, domainDirection);
+        
+        org.springframework.data.domain.Pageable springPageable = PageableAdapter.toSpring(domainPageable);
 
-        // Executar a consulta paginada
         org.springframework.data.domain.Page<ProductProjection> result = productJpaRepository.searchProducts(categoryIds, name, springPageable)
                 .map(projectionMapper::toDomain);
 
-        // Converter o resultado para nosso objeto de domínio ProductPage
         return new ProductPage(
                 result.getContent(),
                 result.getNumber(),

@@ -28,19 +28,15 @@ public class SortAdapter implements Sort {
     private Order convertOrder(org.springframework.data.domain.Sort.Order springOrder) {
         return new OrderAdapter(springOrder);
     }
-    
-    // Método para converter de volta para Spring Sort quando necessário
+
     public org.springframework.data.domain.Sort toSpringSort() {
         return springSort;
     }
-    
-    // Método estático para converter do domínio para Spring
+
     public static org.springframework.data.domain.Sort toSpring(Sort domainSort) {
         if (domainSort instanceof SortAdapter) {
-            return ((SortAdapter) domainSort).toSpringSort();
+            return ((SortAdapter) domainSort).springSort;
         }
-        
-        // Conversão manual se não for um adapter
         List<org.springframework.data.domain.Sort.Order> springOrders = domainSort.getOrders().stream()
             .map(order -> {
                 org.springframework.data.domain.Sort.Direction direction = 

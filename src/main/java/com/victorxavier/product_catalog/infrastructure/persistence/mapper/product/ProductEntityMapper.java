@@ -27,7 +27,7 @@ public class ProductEntityMapper {
         Product product = new Product(entity.getId(), entity.getName(), entity.getDescription(),
                 entity.getPrice(), entity.getImgUrl(), entity.getDate());
 
-        // Map categories
+        
         if (entity.getCategories() != null) {
             entity.getCategories().forEach(categoryEntity -> {
                 Category category = categoryMapper.toDomain(categoryEntity);
@@ -44,7 +44,6 @@ public class ProductEntityMapper {
         }
 
         ProductEntity entity = new ProductEntity();
-        // Removido setId() - o ID é gerenciado pelo JPA
         entity.setName(product.getName());
         entity.setDescription(product.getDescription());
         entity.setPrice(product.getPrice());

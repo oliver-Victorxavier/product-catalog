@@ -21,7 +21,6 @@ public record UserUpdateDto(
     @Email(message = "Email must be valid")
     String email,
     
-    @NotNull(message = "Birth date is required")
     LocalDate birthDate,
     
     Set<String> roles

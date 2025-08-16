@@ -13,7 +13,6 @@ public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid,
 
     @Override
     public boolean isValid(UserUpdateDto dto, ConstraintValidatorContext context) {
-        // Implementar validações específicas se necessário
         return true;
     }
 }

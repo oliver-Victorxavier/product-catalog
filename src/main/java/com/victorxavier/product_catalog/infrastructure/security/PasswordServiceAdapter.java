@@ -15,20 +15,18 @@ public class PasswordServiceAdapter implements PasswordService {
     
     public PasswordServiceAdapter() {
         this.secureRandom = new SecureRandom();
-        // BCrypt com strength 12 para maior segurança
         this.passwordEncoder = new BCryptPasswordEncoder(12, secureRandom);
     }
 
     @Override
     public String generateSalt() {
-        byte[] salt = new byte[32]; // 256 bits de salt
+        byte[] salt = new byte[32];
         secureRandom.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
 
     @Override
     public String hashPassword(String password, String salt) {
-        // BCrypt já inclui salt internamente, mas vamos usar o salt fornecido como pepper adicional
         String saltedPassword = password + salt;
         return passwordEncoder.encode(saltedPassword);
     }

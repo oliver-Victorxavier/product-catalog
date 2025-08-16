@@ -21,7 +21,6 @@ public record UserInsertDTO(
     @Email(message = "Email must be valid")
     String email,
     
-    @NotNull(message = "Birth date is required")
     LocalDate birthDate,
     
     @NotBlank(message = "Username is required")

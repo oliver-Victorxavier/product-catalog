@@ -23,7 +23,7 @@ public class CategoryEntityMapper {
         }
 
         CategoryEntity entity = new CategoryEntity();
-        entity.setId(category.getId()); // Necessário para referenciar categoria existente
+        entity.setId(category.getId());
         entity.setName(category.getName());
 
         return entity;

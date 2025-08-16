@@ -34,7 +34,6 @@ public class JwtServiceAdapter implements JwtService {
     private PrivateKey privateKey;
     private PublicKey publicKey;
     
-    // Token válido por 24 horas
     private static final long TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
     
     @PostConstruct

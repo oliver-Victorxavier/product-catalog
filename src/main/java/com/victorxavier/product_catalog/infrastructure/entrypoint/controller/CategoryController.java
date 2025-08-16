@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/categories")
+@RequestMapping(value = "/api/categories")
 public class CategoryController {
 
     private final CategoryServiceImpl categoryService;
@@ -24,7 +24,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> findAll(
             @RequestParam(defaultValue = "0") int page,
@@ -33,7 +32,6 @@ public class CategoryController {
         return ResponseEntity.ok().body(pageResult);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
         CategoryDTO categoryDTO = categoryService.findById(id);

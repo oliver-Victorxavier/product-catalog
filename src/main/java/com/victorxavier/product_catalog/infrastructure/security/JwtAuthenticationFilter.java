@@ -30,9 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
-        // Pular o filtro JWT para o endpoint de login
         String requestPath = request.getRequestURI();
-        if ("/api/auth/login".equals(requestPath)) {
+        if ("/api/auth/login".equals(requestPath) || "/api/users/create".equals(requestPath) || requestPath.startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,7 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = jwtService.getClaimsFromToken(token);
                 
                 if (username != null && claims != null) {
-                    // Extrair roles do token JWT
                     String rolesString = claims.get("roles", String.class);
                     List<SimpleGrantedAuthority> authorities;
                     
@@ -57,7 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 .map(SimpleGrantedAuthority::new)
                                 .collect(Collectors.toList());
                     } else {
-                        // Fallback para ROLE_USER se não houver roles no token
                         authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
                     }
                     

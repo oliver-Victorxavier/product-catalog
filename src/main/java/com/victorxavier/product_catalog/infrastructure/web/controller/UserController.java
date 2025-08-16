@@ -1,10 +1,8 @@
 package com.victorxavier.product_catalog.infrastructure.web.controller;
 
-import com.victorxavier.product_catalog.domain.dto.CreateUserDto;
 import com.victorxavier.product_catalog.domain.dto.UserDTO;
 import com.victorxavier.product_catalog.domain.dto.UserInsertDTO;
 import com.victorxavier.product_catalog.domain.dto.UserUpdateDto;
-import com.victorxavier.product_catalog.domain.usecase.auth.CreateUserUseCase;
 import com.victorxavier.product_catalog.domain.usecase.user.UserService;
 import jakarta.validation.Valid;
 import com.victorxavier.product_catalog.domain.pagination.Page;
@@ -21,11 +19,9 @@ import java.net.URI;
 @RequestMapping(value = "/api/users")
 public class UserController {
 
-    private final CreateUserUseCase createUserUseCase;
     private final UserService userService;
 
-    public UserController(CreateUserUseCase createUserUseCase, UserService userService) {
-        this.createUserUseCase = createUserUseCase;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -72,9 +68,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> newUser(@RequestBody CreateUserDto createUserDto) {
-        createUserUseCase.createUser(createUserDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 }

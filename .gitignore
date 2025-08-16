@@ -33,3 +33,23 @@ build/
 .vscode/
 data/*.mv.db
 data/*.trace.db
+
+### Security - Secrets and Environment ###
+# Docker secrets (real passwords)
+secrets/*.txt
+!secrets/.gitkeep
+
+# Environment variables (local configurations)
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+
+### Docker ###
+# Data volumes
+postgres_data/
+app_logs/
+pgadmin_data/
