@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/products")
+@RequestMapping(value = "/api/products")
 public class ProductController {
 
     private final ProductServiceImpl productService;
@@ -25,7 +25,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> findAllPaged(
             @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
@@ -39,7 +38,6 @@ public class ProductController {
         return ResponseEntity.ok().body(pageResult);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         ProductDTO productDTO = productService.findById(id);
