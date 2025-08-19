@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/oliver-Victorxavier/product-catalog/compare/v1.1.1...v1.1.2) (2025-08-19)
+
+
+### 🐛 Bug Fixes
+
+* correct dockerhub username to victorxavie ([1189304](https://github.com/oliver-Victorxavier/product-catalog/commit/1189304e46795b1c9be1038d80b2536822a4d3c7))
+
 ## [1.1.1](https://github.com/oliver-Victorxavier/product-catalog/compare/v1.1.0...v1.1.1) (2025-08-19)
 
 
