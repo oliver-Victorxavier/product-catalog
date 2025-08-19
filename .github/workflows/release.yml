@@ -10,7 +10,7 @@ env:
   GHCR_REGISTRY: ghcr.io
   DOCKERHUB_REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
-  DOCKERHUB_IMAGE_NAME: victorxavie/product-catalog
+  DOCKERHUB_IMAGE_NAME: oliver-victorxavier/product-catalog
 
 jobs:
   # First job: creates the release automatically.
