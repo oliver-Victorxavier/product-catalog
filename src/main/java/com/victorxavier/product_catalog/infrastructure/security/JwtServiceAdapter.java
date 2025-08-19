@@ -3,14 +3,11 @@ package com.victorxavier.product_catalog.infrastructure.security;
 import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.service.JwtService;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -91,7 +88,7 @@ public class JwtServiceAdapter implements JwtService {
         Instant expiration = now.plus(TOKEN_VALIDITY, ChronoUnit.MILLIS);
         
         String roles = user.getRoles().stream()
-                .map(role -> "ROLE_" + role.getName())
+                .map(role -> role.getName())
                 .collect(Collectors.joining(","));
         
         return Jwts.builder()

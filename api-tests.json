@@ -1,0 +1,461 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789012",
+		"name": "Product Catalog API",
+		"description": "Coleção completa de endpoints da API do catálogo de produtos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login como administrador - retorna token JWT"
+					}
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"maria.silva\",\n  \"password\": \"senha123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login como usuário comum - retorna token JWT"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User (Public)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"João\",\n  \"lastName\": \"Santos\",\n  \"email\": \"joao.santos@email.com\",\n  \"username\": \"joao.santos\",\n  \"password\": \"senha123\",\n  \"birthDate\": \"1990-05-15\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						},
+						"description": "Criar novo usuário - acesso público, sem autenticação"
+					}
+				},
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						},
+						"description": "Listar todos os usuários - apenas ADMIN"
+					}
+				},
+				{
+					"name": "Create Admin User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Sistema\",\n  \"email\": \"admin@sistema.com\",\n  \"username\": \"admin.sistema\",\n  \"password\": \"admin123\",\n  \"birthDate\": \"1980-01-01\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "admin"]
+						},
+						"description": "Criar novo usuário administrador - apenas ADMIN"
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						},
+						"description": "Listar todos os produtos - acesso público"
+					}
+				},
+				{
+					"name": "Get Product by ID (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "1"]
+						},
+						"description": "Buscar produto por ID - acesso público"
+					}
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Smartphone Galaxy\",\n  \"description\": \"Smartphone Android com 128GB\",\n  \"price\": 899.99,\n  \"imgUrl\": \"https://exemplo.com/smartphone.jpg\",\n  \"categories\": [\n    {\"id\": 1}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						},
+						"description": "Criar novo produto - apenas ADMIN"
+					}
+				},
+				{
+					"name": "Update Product (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Smartphone Galaxy S23\",\n  \"description\": \"Smartphone Android com 256GB\",\n  \"price\": 1299.99,\n  \"imgUrl\": \"https://exemplo.com/smartphone-s23.jpg\",\n  \"categories\": [\n    {\"id\": 1}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "1"]
+						},
+						"description": "Atualizar produto existente - apenas ADMIN"
+					}
+				},
+				{
+					"name": "Delete Product (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "1"]
+						},
+						"description": "Deletar produto - apenas ADMIN"
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "Listar todas as categorias - acesso público"
+					}
+				},
+				{
+					"name": "Get Category by ID (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", "1"]
+						},
+						"description": "Buscar categoria por ID - acesso público"
+					}
+				},
+				{
+					"name": "Create Category (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Acessórios\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "Criar nova categoria - apenas ADMIN"
+					}
+				},
+				{
+					"name": "Update Category (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Acessórios Premium\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", "1"]
+						},
+						"description": "Atualizar categoria existente - apenas ADMIN"
+					}
+				},
+				{
+					"name": "Delete Category (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories", "1"]
+						},
+						"description": "Deletar categoria - apenas ADMIN"
+					}
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart"]
+						},
+						"description": "Visualizar carrinho do usuário logado"
+					}
+				},
+				{
+					"name": "Add Item to Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/cart/items",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart", "items"]
+						},
+						"description": "Adicionar item ao carrinho"
+					}
+				},
+				{
+					"name": "Update Cart Item Quantity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/cart/items",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart", "items"]
+						},
+						"description": "Atualizar quantidade de um item no carrinho"
+					}
+				},
+				{
+					"name": "Remove Item from Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/cart/items/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart", "items", "1"]
+						},
+						"description": "Remover item específico do carrinho pelo ID do produto"
+					}
+				},
+				{
+					"name": "Clear Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart"]
+						},
+						"description": "Limpar todos os itens do carrinho"
+					}
+				}
+			]
+		}
+
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

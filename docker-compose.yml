@@ -26,6 +26,26 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: product-catalog-redis
+    environment:
+      TZ: UTC
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - product-catalog-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+
   app:
     build:
       context: .
@@ -39,6 +59,9 @@ services:
       DB_USERNAME: ${POSTGRES_USER:-postgres}
       DB_PASSWORD_FILE: /run/secrets/db_password
       JWT_SECRET_FILE: /run/secrets/jwt_secret
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis123}
     secrets:
       - db_password
       - jwt_secret 
@@ -46,6 +69,8 @@ services:
       - "8080:8080"
     depends_on:
       postgres: # Ensures the app only starts after the database is healthy.
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - product-catalog-network
@@ -79,6 +104,8 @@ services:
 # Named volumes for data persistence.
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
   app_logs:
     driver: local

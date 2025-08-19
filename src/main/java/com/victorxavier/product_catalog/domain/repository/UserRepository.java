@@ -20,5 +20,7 @@ public interface UserRepository {
     
     Page<User> findAll(Pageable pageable);
     
+    Page<User> findByRoleName(String roleName, Pageable pageable);
+    
     boolean existsById(String id);
 }

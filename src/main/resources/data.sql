@@ -1,5 +1,5 @@
-INSERT INTO tb_roles (name) VALUES ('USER');
-INSERT INTO tb_roles (name) VALUES ('ADMIN');
+INSERT INTO tb_roles (name) VALUES ('ROLE_USER');
+INSERT INTO tb_roles (name) VALUES ('ROLE_ADMIN');
 
 -- Users and roles associations are created by AdminUserConfig
 
@@ -59,3 +59,13 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (22, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (23, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (24, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (25, 3);
+
+-- Inserir usuário administrador
+-- Username: admin, Password: admin123
+-- Salt: YWRtaW5zYWx0MTIz (base64 de "adminsalt123")
+-- Hash BCrypt gerado para: admin123adminsalt123 (senha + salt decodificado)
+INSERT INTO tb_users (user_id, first_name, last_name, email, birth_date, username, password_hash, password_salt, creation_timestamp)
+VALUES ('admin-uuid-001', 'Admin', 'System', 'admin@productcatalog.com', '1990-01-01', 'admin', '$2a$12$PxFfDLDbXtEIP6selvN3N.sVlWomBTVAJz/IVBjVz/LSbXaTZ.o.a', 'YWRtaW5zYWx0MTIz', '2024-01-01T00:00:00Z');
+
+-- Associar usuário admin com role ADMIN (role_id = 2)
+INSERT INTO tb_users_roles (user_id, role_id) VALUES ('admin-uuid-001', 2);

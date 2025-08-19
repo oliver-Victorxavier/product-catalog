@@ -4,9 +4,12 @@ import com.victorxavier.product_catalog.domain.dto.LoginRequest;
 import com.victorxavier.product_catalog.domain.dto.LoginResponse;
 import com.victorxavier.product_catalog.domain.entity.User;
 import com.victorxavier.product_catalog.domain.repository.UserRepository;
-import com.victorxavier.product_catalog.domain.service.PasswordService;
 import com.victorxavier.product_catalog.domain.service.JwtService;
+import com.victorxavier.product_catalog.domain.service.PasswordService;
 import com.victorxavier.product_catalog.domain.usecase.auth.LoginUseCase;
+import com.victorxavier.product_catalog.domain.exception.InvalidCredentialsException;
+
+import java.util.Optional;
 
 public class LoginUseCaseImpl implements LoginUseCase {
 
@@ -21,37 +24,25 @@ public class LoginUseCaseImpl implements LoginUseCase {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        System.out.println("Login attempt for username: " + loginRequest.username());
+    public LoginResponse login(LoginRequest request) {
+        Optional<User> userOpt = userRepository.findByUsername(request.username());
         
-        User user = userRepository.findByUsername(loginRequest.username())
-                .or(() -> userRepository.findByEmail(loginRequest.username()))
-                .orElseThrow(() -> {
-                    System.out.println("User not found: " + loginRequest.username());
-                    return new IllegalArgumentException("Invalid credentials");
-                });
-        
-        System.out.println("User found: " + user.getUsername() + ", ID: " + user.getId());
-        System.out.println("User has salt: " + (user.getPasswordSalt() != null));
-        System.out.println("User has hash: " + (user.getPasswordHash() != null));
+        if (userOpt.isEmpty()) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
 
-        boolean passwordValid = passwordService.verifyPassword(loginRequest.password(), user.getPasswordSalt(), user.getPasswordHash());
-        System.out.println("Password verification result: " + passwordValid);
+        User user = userOpt.get();
         
-        if (!passwordValid) {
-            System.out.println("Password verification failed for user: " + loginRequest.username());
-            throw new IllegalArgumentException("Invalid credentials");
+        String decodedSalt = new String(java.util.Base64.getDecoder().decode(user.getPasswordSalt()));
+        
+        boolean isValid = passwordService.verifyPassword(request.password(), decodedSalt, user.getPasswordHash());
+        
+        if (!isValid) {
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         String token = jwtService.generateToken(user);
-        System.out.println("JWT token generated successfully for user: " + user.getUsername());
-
-        return new LoginResponse(
-            token,
-            "Bearer",
-            3600L,
-            user.getUsername(),
-            user.getEmail()
-        );
+        
+        return new LoginResponse(token, "Bearer", 3600L, user.getUsername(), user.getEmail());
     }
 }

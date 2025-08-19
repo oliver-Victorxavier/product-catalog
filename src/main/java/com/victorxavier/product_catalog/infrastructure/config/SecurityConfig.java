@@ -24,12 +24,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        System.out.println("=== SECURITY CONFIG: Configuring security filter chain ===");
+        
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/login", "/h2-console/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                .requestMatchers("/api/auth/**").permitAll() // Permite todos os endpoints de auth
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/debug/**").permitAll() // Endpoint temporário para debug
+                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll() // Registro público de usuários
                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
                 .anyRequest().authenticated()
@@ -37,6 +41,7 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .headers(headers -> headers.frameOptions().disable()); // Para H2 Console
 
+        System.out.println("=== SECURITY CONFIG: Security filter chain configured ===");
         return http.build();
     }
 }

@@ -6,10 +6,11 @@ import com.victorxavier.product_catalog.domain.dto.UserUpdateDto;
 import com.victorxavier.product_catalog.domain.usecase.user.UserService;
 import jakarta.validation.Valid;
 import com.victorxavier.product_catalog.domain.pagination.Page;
-import com.victorxavier.product_catalog.domain.pagination.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,11 +26,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
-        Page<UserDTO> list = userService.findAllPaged(pageable);
-        return ResponseEntity.ok().body(list);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Page<UserDTO>> findAllAdmins(
+            @PageableDefault(size = 12) Pageable springPageable) {
+        
+        com.victorxavier.product_catalog.domain.pagination.Pageable domainPageable = 
+            new com.victorxavier.product_catalog.domain.pagination.Pageable(
+                springPageable.getPageNumber(), 
+                springPageable.getPageSize()
+            );
+        Page<UserDTO> result = userService.findAdminsPaged(domainPageable);
+        return ResponseEntity.ok(result);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
@@ -41,14 +49,33 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/me")
-    public ResponseEntity<UserDTO> findMe() {
-        UserDTO dto = userService.findMe();
+    public ResponseEntity<UserDTO> findMe(Authentication authentication) {
+        String username = authentication.getName();
+        UserDTO dto = userService.findMe(username);
         return ResponseEntity.ok().body(dto);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody UserInsertDTO dto) {
+        UserDTO newDto = userService.registerUser(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newDto.id()).toUri();
+        return ResponseEntity.created(uri).body(newDto);
+    }
+
     @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody @Valid UserInsertDTO dto) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
         UserDTO newDto = userService.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(newDto.id()).toUri();
+        return ResponseEntity.created(uri).body(newDto);
+    }
+
+    @PostMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<UserDTO> insertAdmin(@Valid @RequestBody UserInsertDTO dto) {
+        UserDTO newDto = userService.insertAdmin(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newDto.id()).toUri();
         return ResponseEntity.created(uri).body(newDto);

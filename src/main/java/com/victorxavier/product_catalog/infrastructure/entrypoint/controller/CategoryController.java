@@ -4,6 +4,8 @@ import com.victorxavier.product_catalog.domain.dto.CategoryDTO;
 import com.victorxavier.product_catalog.domain.pagination.Page;
 import com.victorxavier.product_catalog.application.usecase.impl.category.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,8 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<CategoryDTO> pageResult = categoryService.findAllPaged(page, size);
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<CategoryDTO> pageResult = categoryService.findAllPaged(pageable.getPageNumber(), pageable.getPageSize());
         return ResponseEntity.ok().body(pageResult);
     }
 

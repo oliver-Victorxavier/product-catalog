@@ -15,7 +15,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProductServiceImpl implements FindProductUseCase, CreateProductUsecase, UpdateProductUseCase, DeleteProductUseCase {
+public class ProductServiceImpl implements FindProductUseCase, CreateProductUsecase,
+        UpdateProductUseCase, DeleteProductUseCase {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;

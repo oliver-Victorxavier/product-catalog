@@ -14,7 +14,8 @@ import com.victorxavier.product_catalog.domain.usecase.category.UpdateCategoryUs
 import com.victorxavier.product_catalog.domain.mapper.CategoryDomainMapper;
 import java.util.Optional;
 
-public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryUseCase, UpdateCategoryUseCase, DeleteCategoryUseCase {
+public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryUseCase,
+        UpdateCategoryUseCase, DeleteCategoryUseCase {
 
     private final CategoryRepository repository;
     private final CategoryDomainMapper categoryMapper;
@@ -44,6 +45,7 @@ public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryU
             throw new ResourceNotFoundException("Id not found" + id);
         }
     }
+
     @Override
     public void delete(Long id) {
         if (repository.findById(id).isEmpty()) {
@@ -57,6 +59,7 @@ public class CategoryServiceImpl implements CreateCategoryUseCase, FindCategoryU
         }
 
     }
+
     @Override
     public CategoryDTO findById(Long id) {
         Optional<Category> obj = repository.findById(id);

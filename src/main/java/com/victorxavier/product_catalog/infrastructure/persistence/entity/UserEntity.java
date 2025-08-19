@@ -184,7 +184,7 @@ public class UserEntity implements UserDetails {
 
     public boolean isAdmin() {
         return roles.stream()
-                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN"));
     }
 
     @Override

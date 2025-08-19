@@ -33,7 +33,15 @@ public class PasswordServiceAdapter implements PasswordService {
 
     @Override
     public boolean verifyPassword(String password, String salt, String hash) {
+        System.out.println("=== PASSWORD VERIFICATION DEBUG ===");
+        System.out.println("Password: " + password);
+        System.out.println("Salt: " + salt);
+        System.out.println("Hash: " + hash);
         String saltedPassword = password + salt;
-        return passwordEncoder.matches(saltedPassword, hash);
+        System.out.println("Salted password: " + saltedPassword);
+        boolean matches = passwordEncoder.matches(saltedPassword, hash);
+        System.out.println("Matches: " + matches);
+        System.out.println("=== END DEBUG ===");
+        return matches;
     }
 }
