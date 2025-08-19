@@ -13,7 +13,6 @@ import com.victorxavier.product_catalog.domain.usecase.auth.CreateUserUseCase;
 import com.victorxavier.product_catalog.domain.usecase.user.UserService;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,8 +30,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDTO> findAllPaged(Pageable pageable) {
+        Page<User> userPage = userRepository.findAll(pageable);
+        
+        var userDTOs = userPage.getContent().stream()
+            .map(user -> new UserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getBirthDate(),
+                user.getUsername(),
+                user.getCreationTimestamp(),
+                user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toSet())
+            ))
+            .collect(Collectors.toList());
+        
+        return new Page<>(userDTOs, userPage.getPageNumber(), userPage.getPageSize(), userPage.getTotalElements());
+    }
 
-        return new Page<>(Collections.emptyList(), 0, pageable.getPageSize(), 0L);
+    @Override
+    public Page<UserDTO> findAdminsPaged(Pageable pageable) {
+        Page<User> userPage = userRepository.findByRoleName("ROLE_ADMIN", pageable);
+        
+        var userDTOs = userPage.getContent().stream()
+            .map(user -> new UserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getBirthDate(),
+                user.getUsername(),
+                user.getCreationTimestamp(),
+                user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toSet())
+            ))
+            .collect(Collectors.toList());
+        
+        return new Page<>(userDTOs, userPage.getPageNumber(), userPage.getPageSize(), userPage.getTotalElements());
     }
 
     @Override
@@ -55,13 +92,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findMe() {
-        String currentUserId = securityService.getCurrentUserId();
-        if (currentUserId == null) {
-            throw new RuntimeException("No authenticated user found");
-        }
+    public UserDTO findMe(String username) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
         
-        return findById(currentUserId);
+        return new UserDTO(
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail(),
+            user.getBirthDate(),
+            user.getUsername(),
+            user.getCreationTimestamp(),
+            user.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toSet())
+        );
+    }
+
+    @Override
+    public UserDTO registerUser(UserInsertDTO dto) {
+        // Registro público - sempre cria usuário com role USER, ignorando roles do DTO
+        CreateUserDto createUserDto = new CreateUserDto(
+            dto.firstName(),
+            dto.lastName(),
+            dto.email(),
+            dto.birthDate(),
+            dto.username(),
+            dto.password(),
+            null // Não passa roles - será atribuída a role padrão USER
+        );
+        
+        createUserUseCase.createUser(createUserDto);
+        
+        User createdUser = userRepository.findByUsername(dto.username())
+            .orElseThrow(() -> new RuntimeException("User not found after creation"));
+        
+        return new UserDTO(
+            createdUser.getId(),
+            createdUser.getFirstName(),
+            createdUser.getLastName(),
+            createdUser.getEmail(),
+            createdUser.getBirthDate(),
+            createdUser.getUsername(),
+            createdUser.getCreationTimestamp(),
+            createdUser.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toSet())
+        );
     }
 
     @Override
@@ -80,6 +158,39 @@ public class UserServiceImpl implements UserService {
         
         User createdUser = userRepository.findByUsername(dto.username())
             .orElseThrow(() -> new RuntimeException("User not found after creation"));
+        
+        return new UserDTO(
+            createdUser.getId(),
+            createdUser.getFirstName(),
+            createdUser.getLastName(),
+            createdUser.getEmail(),
+            createdUser.getBirthDate(),
+            createdUser.getUsername(),
+            createdUser.getCreationTimestamp(),
+            createdUser.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toSet())
+        );
+    }
+
+    @Override
+    public UserDTO insertAdmin(UserInsertDTO dto) {
+        Set<String> adminRoles = Set.of("ROLE_ADMIN");
+        
+        CreateUserDto createUserDto = new CreateUserDto(
+            dto.firstName(),
+            dto.lastName(),
+            dto.email(),
+            dto.birthDate(),
+            dto.username(),
+            dto.password(),
+            adminRoles
+        );
+        
+        createUserUseCase.createUser(createUserDto);
+        
+        User createdUser = userRepository.findByUsername(dto.username())
+            .orElseThrow(() -> new RuntimeException("Admin user not found after creation"));
         
         return new UserDTO(
             createdUser.getId(),

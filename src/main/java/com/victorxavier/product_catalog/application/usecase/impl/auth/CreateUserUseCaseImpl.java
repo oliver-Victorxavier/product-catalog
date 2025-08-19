@@ -29,7 +29,9 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
         validateUserDoesNotExist(createUserDto.username(), createUserDto.email());
         
         String salt = passwordService.generateSalt();
-        String hashedPassword = passwordService.hashPassword(createUserDto.password(), salt);
+
+        String decodedSalt = new String(java.util.Base64.getDecoder().decode(salt));
+        String hashedPassword = passwordService.hashPassword(createUserDto.password(), decodedSalt);
         
         User user = new User();
         user.setFirstName(createUserDto.firstName());
@@ -57,11 +59,11 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     }
 
     private void assignDefaultRole(User user) {
-        Optional<Role> userRole = roleRepository.findByName("USER");
+        Optional<Role> userRole = roleRepository.findByName("ROLE_USER");
         if (userRole.isPresent()) {
             user.addRole(userRole.get());
         } else {
-            throw new IllegalStateException("Default USER role not found in database");
+            throw new IllegalStateException("Default ROLE_USER role not found in database");
         }
     }
     

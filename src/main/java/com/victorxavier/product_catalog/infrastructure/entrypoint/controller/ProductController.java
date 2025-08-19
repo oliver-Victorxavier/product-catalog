@@ -5,6 +5,8 @@ import com.victorxavier.product_catalog.domain.pagination.Page;
 import com.victorxavier.product_catalog.domain.pagination.PageRequest;
 import com.victorxavier.product_catalog.application.usecase.impl.product.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +31,8 @@ public class ProductController {
     public ResponseEntity<Page<ProductDTO>> findAllPaged(
             @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
             @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "sort", defaultValue = "name") String sort,
-            @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-        PageRequest pageRequest = new PageRequest(page, size, sort, direction);
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        PageRequest pageRequest = convertToPageRequest(pageable);
         Page<ProductDTO> pageResult = productService.findAllPaged(categoryId, name, pageRequest);
         return ResponseEntity.ok().body(pageResult);
     }
@@ -66,5 +65,18 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private PageRequest convertToPageRequest(Pageable pageable) {
+        String sortField = "name"; // default
+        String sortDirection = "ASC"; // default
+        
+        if (pageable.getSort().isSorted()) {
+            org.springframework.data.domain.Sort.Order order = pageable.getSort().iterator().next();
+            sortField = order.getProperty();
+            sortDirection = order.getDirection().name();
+        }
+        
+        return new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sortField, sortDirection);
     }
 }

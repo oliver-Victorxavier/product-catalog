@@ -9,10 +9,9 @@ import com.victorxavier.product_catalog.infrastructure.persistence.mapper.produc
 import com.victorxavier.product_catalog.infrastructure.persistence.mapper.product.ProductProjectionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter;
-import com.victorxavier.product_catalog.infrastructure.persistence.adapter.SortAdapter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import com.victorxavier.product_catalog.domain.pagination.Pageable;
-import com.victorxavier.product_catalog.domain.pagination.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,15 +64,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     @Transactional(readOnly = true)
     public ProductPage searchProducts(List<Long> categoryIds, String name, int page, int size, String sortField, String direction) {
-        Sort.Direction domainDirection = 
+        com.victorxavier.product_catalog.domain.pagination.Sort.Direction domainDirection = 
             "DESC".equalsIgnoreCase(direction) ? 
-                Sort.Direction.DESC : 
-                Sort.Direction.ASC;
+                com.victorxavier.product_catalog.domain.pagination.Sort.Direction.DESC : 
+                com.victorxavier.product_catalog.domain.pagination.Sort.Direction.ASC;
         
         Pageable domainPageable = 
             new Pageable(page, size, sortField, domainDirection);
         
-        org.springframework.data.domain.Pageable springPageable = PageableAdapter.toSpring(domainPageable);
+        // Converter Pageable do domínio para Spring Data
+        org.springframework.data.domain.Pageable springPageable = convertToSpringPageable(domainPageable);
 
         org.springframework.data.domain.Page<ProductProjection> result = productJpaRepository.searchProducts(categoryIds, name, springPageable)
                 .map(projectionMapper::toDomain);
@@ -85,6 +85,23 @@ public class ProductRepositoryImpl implements ProductRepository {
                 result.getTotalElements(),
                 result.getTotalPages()
         );
+    }
+    
+    /**
+     * Converte Pageable do domínio para Pageable do Spring Data
+     */
+    private org.springframework.data.domain.Pageable convertToSpringPageable(Pageable domainPageable) {
+        if (domainPageable == null) {
+            return PageRequest.of(0, 20);
+        }
+
+        if (domainPageable.getSort() != null && !domainPageable.getSort().isEmpty()) {
+            Sort.Direction direction = domainPageable.getSortDirection() == com.victorxavier.product_catalog.domain.pagination.Sort.Direction.DESC
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sort = Sort.by(direction, domainPageable.getSort());
+            return PageRequest.of(domainPageable.getPageNumber(), domainPageable.getPageSize(), sort);
+        }
+        return PageRequest.of(domainPageable.getPageNumber(), domainPageable.getPageSize());
     }
 
     @Override

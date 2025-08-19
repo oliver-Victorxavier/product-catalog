@@ -1,7 +1,6 @@
-package com.victorxavier.product_catalog.infrastructure.validation;
+package com.victorxavier.product_catalog.domain.validation;
 
 import com.victorxavier.product_catalog.domain.dto.UserUpdateDto;
-import com.victorxavier.product_catalog.infrastructure.validation.UserUpdateValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

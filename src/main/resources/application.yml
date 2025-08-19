@@ -34,6 +34,19 @@ spring:
       enabled: true
       path: /h2-console
 
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis123}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
 # JWT Configuration (comum para todos os perfis)
 jwt:
   public:
@@ -51,14 +64,22 @@ management:
     health:
       show-details: when-authorized
 
-# Logging for Mock
+# Logging Configuration
 logging:
   level:
-    org.springframework.security: DEBUG
-    com.victorxavier: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: WARN
+    com.victorxavier: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
 
 # Server Configuration
 server:
   port: 8080
+
+# Melhor Envio API Configuration
+melhor-envio:
+  api:
+    base-url: ${MELHOR_ENVIO_BASE_URL:https://sandbox.melhorenvio.com.br/api/v2/me}
+    token: ${MELHOR_ENVIO_TOKEN:your-sandbox-token-here}
+    timeout: ${MELHOR_ENVIO_TIMEOUT:30000}
+    sandbox: ${MELHOR_ENVIO_SANDBOX:true}

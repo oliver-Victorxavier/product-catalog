@@ -6,6 +6,13 @@ public class Pageable {
     private String sort;
     private Sort.Direction sortDirection;
     
+    
+    public Pageable() {
+        this.pageNumber = 0;
+        this.pageSize = 20;
+        this.sortDirection = Sort.Direction.ASC;
+    }
+    
     public Pageable(int pageNumber, int pageSize) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;

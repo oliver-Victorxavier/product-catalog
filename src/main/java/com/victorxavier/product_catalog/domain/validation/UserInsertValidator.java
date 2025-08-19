@@ -1,8 +1,7 @@
-package com.victorxavier.product_catalog.infrastructure.validation;
+package com.victorxavier.product_catalog.domain.validation;
 
 import com.victorxavier.product_catalog.domain.dto.UserInsertDTO;
 import com.victorxavier.product_catalog.domain.repository.UserRepository;
-import com.victorxavier.product_catalog.infrastructure.validation.UserInsertValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;

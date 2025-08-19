@@ -6,7 +6,9 @@ import com.victorxavier.product_catalog.domain.repository.UserRepository;
 import com.victorxavier.product_catalog.infrastructure.persistence.repository.JpaUserRepository;
 import com.victorxavier.product_catalog.domain.pagination.Page;
 import com.victorxavier.product_catalog.domain.pagination.Pageable;
-import com.victorxavier.product_catalog.infrastructure.persistence.adapter.PageableAdapter;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,7 +57,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Page<User> findAll(Pageable pageable) {
-        org.springframework.data.domain.Pageable springPageable = PageableAdapter.toSpring(pageable);
+        // Converter Pageable do domínio para Spring Data
+        org.springframework.data.domain.Pageable springPageable = convertToSpringPageable(pageable);
         org.springframework.data.domain.Page<com.victorxavier.product_catalog.infrastructure.persistence.entity.UserEntity> springPage = 
             jpaUserRepository.findAll(springPageable);
         List<User> users = springPage.getContent().stream()
@@ -65,7 +68,36 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Page<User> findByRoleName(String roleName, Pageable pageable) {
+        // Converter Pageable do domínio para Spring Data
+        org.springframework.data.domain.Pageable springPageable = convertToSpringPageable(pageable);
+        org.springframework.data.domain.Page<com.victorxavier.product_catalog.infrastructure.persistence.entity.UserEntity> springPage = 
+            jpaUserRepository.findByRoleName(roleName, springPageable);
+        List<User> users = springPage.getContent().stream()
+            .map(userMapper::toDomain)
+            .collect(java.util.stream.Collectors.toList());
+        return new Page<>(users, springPage.getNumber(), springPage.getSize(), springPage.getTotalElements());
+    }
+
+    @Override
     public boolean existsById(String id) {
         return jpaUserRepository.existsById(id);
+    }
+    
+    /**
+     * Converte Pageable do domínio para Pageable do Spring Data
+     */
+    private org.springframework.data.domain.Pageable convertToSpringPageable(Pageable domainPageable) {
+        if (domainPageable == null) {
+            return PageRequest.of(0, 20);
+        }
+
+        if (domainPageable.getSort() != null && !domainPageable.getSort().isEmpty()) {
+            Sort.Direction direction = domainPageable.getSortDirection() == com.victorxavier.product_catalog.domain.pagination.Sort.Direction.DESC
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sort = Sort.by(direction, domainPageable.getSort());
+            return PageRequest.of(domainPageable.getPageNumber(), domainPageable.getPageSize(), sort);
+        }
+        return PageRequest.of(domainPageable.getPageNumber(), domainPageable.getPageSize());
     }
 }

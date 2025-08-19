@@ -1,4 +1,4 @@
-package com.victorxavier.product_catalog.infrastructure.validation;
+package com.victorxavier.product_catalog.domain.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = com.victorxavier.product_catalog.infrastructure.validation.UserInsertValidator.class)
+@Constraint(validatedBy = com.victorxavier.product_catalog.domain.validation.UserInsertValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserInsertValid {
