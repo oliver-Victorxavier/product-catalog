@@ -1,3 +1,16 @@
+## [1.1.0](https://github.com/oliver-Victorxavier/product-catalog/compare/v1.0.0...v1.1.0) (2025-08-19)
+
+
+### 🚀 Features
+
+* add cart and redis configuration ([cc9029e](https://github.com/oliver-Victorxavier/product-catalog/commit/cc9029ecdc16a4a3260afe983064b96695c682cb))
+* add cart controller with security improvements ([55c6bf4](https://github.com/oliver-Victorxavier/product-catalog/commit/55c6bf46515bc28469c3d11e98c839bcf11b48ee))
+* add cart domain layer and application services ([0e5d32b](https://github.com/oliver-Victorxavier/product-catalog/commit/0e5d32b6bf5b8e2dd12c353c8180a979481a7a56))
+* add cart domain models and DTOs ([76bb64f](https://github.com/oliver-Victorxavier/product-catalog/commit/76bb64fe8d6cf7ca0b33f3ee8f879ddbcc200057))
+* add cart management use cases ([63b6362](https://github.com/oliver-Victorxavier/product-catalog/commit/63b6362d5a9e0b12eae6dbf7e8d7ca52c3571ed2))
+* add cart redis entities and mapper ([32f3c88](https://github.com/oliver-Victorxavier/product-catalog/commit/32f3c8885fc5e4e0e332211523de514dca2517a0))
+* add cart repository implementation ([9111387](https://github.com/oliver-Victorxavier/product-catalog/commit/911138721ff026425e45a8ae26260fb4bd50dfcd))
+
 ## 1.0.0 (2025-08-16)
 
 
